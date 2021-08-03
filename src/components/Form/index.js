@@ -23,7 +23,7 @@ function imcCalculator(){
     return setImc((weigth/(heigth*heigth)).toFixed(2))
 }
 
-useEffect(() => setProgressBar());
+useEffect(() => {if(imc != null){setProgressBar() }});
 
 
 function validationImc(){
