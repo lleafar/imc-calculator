@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react" 
+import React from "react" 
 import {View, TextInput, Text, TouchableOpacity, Image, Vibration, Keyboard, Pressable} from "react-native"
 import ResultImc from "./ResultImc/";
 import ProgressBar from "./ProgressBar/index";
@@ -20,11 +20,55 @@ const [tick, setTick] = React.useState(null)
 const [errorMessage, setErrorMessage] = React.useState(null)
 
 function imcCalculator(){
-    return setImc((weigth/(heigth*heigth)).toFixed(2))
+    var pes = (weigth/(heigth*heigth))
+    setImc(pes)
+
+    if(isMalePressed){
+       
+        if(pes < 20.7){
+          //abaixo
+          setClassificacao("Abaixo do Peso")
+          setTick(1)
+        }else if(pes < 26.5){
+          //ideal
+          setClassificacao("Peso Ideal");
+          setTick(2)
+        }else if(pes < 27.9){
+          //pouco acima do peso  
+          setClassificacao("Pouco Acima do Peso")
+          setTick(3)
+        }else if(pes < 31.2){
+          //acima do peso
+          setClassificacao("Acima do Peso")
+          setTick(4)
+        }else if(pes >= 31.2){
+            setClassificacao("Obesidade")
+            setTick(5)
+        }else if(isFemalePressed){
+            if(pes< 19.10){
+                //abaixo
+                setClassificacao("Abaixo do Peso")
+                setTick(1)
+              }else if(pes < 25.90){
+                //ideal
+                setClassificacao("Peso Ideal")
+                setTick(2)
+              }else if(pes < 27.40){
+                //pouco acima do peso  
+                setClassificacao("Pouco Acima do Peso")
+                setTick(3)
+              }else if(pes < 32.40){
+                //acima do peso
+                setClassificacao("Acima do Peso")
+                setTick(4)
+              }else if(pes > 32.40){
+                  setClassificacao("Obesidade")
+                  setTick(5)
+              }
+            }
+    }
+
 }
-
-useEffect(() => {if(imc != null){setProgressBar() }});
-
 
 function validationImc(){
     if(weigth != null && heigth != null){
@@ -62,53 +106,6 @@ function selectFemale(){
     setIsFemalePressed(true) 
 }
 
-function setProgressBar(){
-    if(isMalePressed){
-        if(parseFloat(imc) < 20.70){
-          //abaixo
-          setClassificacao("Abaixo do Peso")
-          setTick(1)
-        }else if(parseFloat(imc) < 26.50){
-          //ideal
-          setClassificacao("Peso Ideal");
-          setTick(2)
-        }else if(parseFloat(imc) < 27.90){
-          //pouco acima do peso  
-          setClassificacao("Pouco Acima do Peso")
-          setTick(3)
-        }else if(parseFloat(imc) < 31.20){
-          //acima do peso
-          setClassificacao("Acima do Peso")
-          setTick(4)
-        }else if(parseFloat(imc) >= 31.20){
-            setClassificacao("Obesidade")
-            setTick(5)
-        }
-    }else if(isFemalePressed){
-        if(parseFloat(imc) < 19.10){
-            //abaixo
-            setClassificacao("Abaixo do Peso")
-            setTick(1)
-          }else if(parseFloat(imc) < 25.90){
-            //ideal
-            setClassificacao("Peso Ideal")
-            setTick(2)
-          }else if(parseFloat(imc) < 27.40){
-            //pouco acima do peso  
-            setClassificacao("Pouco Acima do Peso")
-            setTick(3)
-          }else if(parseFloat(imc) < 32.40){
-            //acima do peso
-            setClassificacao("Acima do Peso")
-            setTick(4)
-          }else if(parseFloat(imc) > 32.40){
-              setClassificacao("Obesidade")
-              setTick(5)
-          }
-        }
-
-}
- 
     return(
         
         <Pressable onPress={Keyboard.dismiss} style={styles.formContext}>
@@ -134,7 +131,7 @@ function setProgressBar(){
             </View>
             {imc != null ? 
             <View style={styles.results}>
-                  <ResultImc messageResultImc={messageImc} resultImc={imc}/>
+                  <ResultImc messageResultImc={messageImc} resultImc={imc.toFixed(2)}/>
                   <ProgressBar classificacao={classificacao} num={tick}/>
             </View>
            : <Text/>}
